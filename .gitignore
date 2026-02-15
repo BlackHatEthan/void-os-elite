@@ -1,0 +1,149 @@
+# Void OS Elite - Git Ignore File
+
+# Build artifacts
+void/build/
+void/void
+void/portable/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Compiled binaries
+void/void
+void/*.exe
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log
+*.cache
+*.pid
+*.lock
+
+# User-specific files
+.voidrc
+.void_logs
+.void/
+void_logs/
+
+# ISO files (large)
+*.iso
+*.iso.gz
+*.iso.xz
+void_iso/
+
+# Alpine Linux downloads
+alpine-*.tar.gz
+alpine-*.iso
+vmlinuz-*
+initramfs-*
+
+# Test files
+test_*
+*_test
+*.test
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Package files
+*.deb
+*.rpm
+*.pkg
+*.dmg
+
+# Archive files (optional - uncomment if you don't want to track archives)
+# *.zip
+# *.tar.gz
+# *.tar.bz2
+
+# Documentation builds (if using Sphinx, etc.)
+docs/_build/
+docs/.doctrees/
+
+# Coverage reports
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Profiling data
+*.prof
+gmon.out
+
+# Core dumps
+core
+core.*
+
+# Valgrind output
+valgrind-out.*
+
+# Editor directories
+.vim/
+.emacs.d/
+*.sublime-*
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Autotools
+autom4te.cache/
+config.log
+config.status
+Makefile.in
+
+# Python (if any Python tools)
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.pytest_cache/
+venv/
+env/
+ENV/
+
+# Node.js (if any Node tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Rust (if any Rust components)
+target/
+Cargo.lock
+
+# Go (if any Go components)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
