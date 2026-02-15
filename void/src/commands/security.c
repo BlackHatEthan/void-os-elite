@@ -314,3 +314,115 @@ int cmd_net_watch(int argc, char **argv, shell_context_t *ctx) {
     return 0;
 }
 
+int cmd_incantation(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: incantation <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    /* Grant execute permission and run */
+    if (chmod(argv[1], 0755) != 0) {
+        printf(COLOR_GREY "Cannot grant execute permission: %s\n" COLOR_RESET, argv[1]);
+        return 1;
+    }
+    
+    printf(COLOR_GREEN "Execute permission granted. Use 'summon' to run.\n" COLOR_RESET);
+    return 0;
+}
+
+int cmd_black_hole(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: black-hole <target>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    /* Irreversibly delete without confirmation */
+    if (unlink(argv[1]) != 0 && rmdir(argv[1]) != 0) {
+        printf(COLOR_GREY "Cannot delete: %s\n" COLOR_RESET, argv[1]);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "Target vanished into the void.\n" COLOR_RESET);
+    return 0;
+}
+
+int cmd_echo_chamber(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 3) {
+        printf(COLOR_GREY "Usage: echo-chamber <file1> <file2>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "File comparison requires diff implementation.\n" COLOR_RESET);
+    printf(COLOR_GREY "Use 'diff' command for file comparison.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_stasis(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    int seconds = (argc > 1) ? atoi(argv[1]) : 1;
+    
+    if (seconds <= 0) {
+        printf(COLOR_GREY "Invalid duration.\n" COLOR_RESET);
+        return 1;
+    }
+    
+    sleep(seconds);
+    return 0;
+}
+
+int cmd_black_box(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 3) {
+        printf(COLOR_GREY "Usage: black-box <encrypt|decrypt> <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "AES-256 encryption requires crypto implementation.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_signal_lost(int argc, char **argv, shell_context_t *ctx) {
+    (void)argc;
+    (void)argv;
+    (void)ctx;
+    
+    printf(COLOR_GREY "Emergency network killswitch requires system-level implementation.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_chronos(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 3) {
+        printf(COLOR_GREY "Usage: chronos <time> <command>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "Command scheduling requires at/cron implementation.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_singularity(int argc, char **argv, shell_context_t *ctx) {
+    (void)argc;
+    (void)argv;
+    (void)ctx;
+    
+    printf(COLOR_GREY "Container management requires docker-compose.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_glitch(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    int length = (argc > 1) ? atoi(argv[1]) : 32;
+    
+    if (length <= 0 || length > 1024) {
+        printf(COLOR_GREY "Invalid length (1-1024).\n" COLOR_RESET);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "Random data generation requires /dev/urandom access.\n" COLOR_RESET);
+    return 1;
+}
+

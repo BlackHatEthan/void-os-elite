@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <errno.h>
+#include <ctype.h>
 #include <fcntl.h>
 #include <pwd.h>
 #include <grp.h>
@@ -329,16 +330,16 @@ int cmd_ln(int argc, char **argv, shell_context_t *ctx) {
     }
     
     const char *target = argv[target_idx];
-    const char *link = argv[target_idx + 1];
+    const char *link_name = argv[target_idx + 1];
     
     if (symbolic) {
-        if (symlink(target, link) != 0) {
-            printf(COLOR_GREY "Cannot create symlink: %s\n" COLOR_RESET, link);
+        if (symlink(target, link_name) != 0) {
+            printf(COLOR_GREY "Cannot create symlink: %s\n" COLOR_RESET, link_name);
             return 1;
         }
     } else {
-        if (link(target, link) != 0) {
-            printf(COLOR_GREY "Cannot create hard link: %s\n" COLOR_RESET, link);
+        if (link(target, link_name) != 0) {
+            printf(COLOR_GREY "Cannot create hard link: %s\n" COLOR_RESET, link_name);
             return 1;
         }
     }

@@ -46,7 +46,6 @@ int cmd_void_status(int argc, char **argv, shell_context_t *ctx) {
     printf(COLOR_GREY "Directory: " COLOR_WHITE "%s\n" COLOR_RESET, ctx->cwd ? ctx->cwd : "/");
     printf(COLOR_GREY "Active Jobs: " COLOR_WHITE "%d\n" COLOR_RESET, ctx->job_count);
     printf(COLOR_GREY "Aliases: " COLOR_WHITE "%d\n" COLOR_RESET, ctx->alias_count);
-    printf(COLOR_GREY "History: " COLOR_WHITE "%d commands\n" COLOR_RESET, ctx->history_count);
     return 0;
 }
 
@@ -299,7 +298,6 @@ int cmd_void_stats(int argc, char **argv, shell_context_t *ctx) {
     
     printf(COLOR_WHITE "Void OS Usage Statistics\n" COLOR_RESET);
     printf(COLOR_GREY "────────────────────────\n" COLOR_RESET);
-    printf(COLOR_GREY "Commands executed: " COLOR_WHITE "%d\n" COLOR_RESET, ctx->history_count);
     printf(COLOR_GREY "Aliases defined: " COLOR_WHITE "%d\n" COLOR_RESET, ctx->alias_count);
     printf(COLOR_GREY "Background jobs: " COLOR_WHITE "%d\n" COLOR_RESET, ctx->job_count);
     return 0;

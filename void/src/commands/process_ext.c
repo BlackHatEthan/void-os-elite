@@ -581,15 +581,6 @@ int cmd_powertop(int argc, char **argv, shell_context_t *ctx) {
     return 1;
 }
 
-int cmd_nethogs_ext(int argc, char **argv, shell_context_t *ctx) {
-    (void)argc;
-    (void)argv;
-    (void)ctx;
-    
-    printf(COLOR_GREY "Nethogs requires per-process network statistics.\n" COLOR_RESET);
-    return 1;
-}
-
 /* Process Tracing & Debugging */
 int cmd_strace_ext(int argc, char **argv, shell_context_t *ctx) {
     (void)ctx;

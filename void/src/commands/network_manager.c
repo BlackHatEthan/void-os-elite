@@ -1,4 +1,5 @@
 #include "network_manager.h"
+#include "network_ext.h"
 #include "../utils/logger.h"
 #include "../utils/string.h"
 #include "../utils/http_client.h"

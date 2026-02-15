@@ -2,6 +2,7 @@
 #define NETWORK_MANAGER_H
 
 #include "../../include/void.h"
+#include <stddef.h>
 
 /* Network and WiFi Management Commands */
 

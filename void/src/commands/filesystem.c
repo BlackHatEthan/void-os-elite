@@ -388,3 +388,103 @@ int cmd_watch(int argc, char **argv, shell_context_t *ctx) {
     return 0;
 }
 
+int cmd_scavenge(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    const char *dir = (argc > 1) ? argv[1] : ".";
+    
+    printf(COLOR_WHITE "Scavenging for files in: %s\n" COLOR_RESET, dir);
+    printf(COLOR_GREY "─────────────────────────────────\n" COLOR_RESET);
+    
+    DIR *d = opendir(dir);
+    if (d == NULL) {
+        printf(COLOR_GREY "%s\n" COLOR_RESET, ERR_FILE_NOT_FOUND);
+        return 1;
+    }
+    
+    struct dirent *entry;
+    int count = 0;
+    while ((entry = readdir(d)) != NULL) {
+        if (entry->d_name[0] != '.') {
+            printf(COLOR_WHITE "%s\n" COLOR_RESET, entry->d_name);
+            count++;
+        }
+    }
+    closedir(d);
+    
+    printf(COLOR_GREY "Found %d items\n" COLOR_RESET, count);
+    return 0;
+}
+
+int cmd_marrow(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: marrow <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    FILE *fp = fopen(argv[1], "r");
+    if (fp == NULL) {
+        printf(COLOR_GREY "%s\n" COLOR_RESET, ERR_FILE_NOT_FOUND);
+        return 1;
+    }
+    
+    char line[4096];
+    int line_num = 1;
+    while (fgets(line, sizeof(line), fp) != NULL && line_num <= 10) {
+        printf(COLOR_GREY "%4d: " COLOR_WHITE "%s" COLOR_RESET, line_num, line);
+        line_num++;
+    }
+    fclose(fp);
+    return 0;
+}
+
+int cmd_dissect(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: dissect <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    struct stat st;
+    if (stat(argv[1], &st) != 0) {
+        printf(COLOR_GREY "%s\n" COLOR_RESET, ERR_FILE_NOT_FOUND);
+        return 1;
+    }
+    
+    printf(COLOR_WHITE "File Analysis: %s\n" COLOR_RESET, argv[1]);
+    printf(COLOR_GREY "─────────────────────────────────\n" COLOR_RESET);
+    printf(COLOR_GREY "Size: " COLOR_WHITE "%ld bytes\n" COLOR_RESET, (long)st.st_size);
+    printf(COLOR_GREY "Type: " COLOR_WHITE "%s\n" COLOR_RESET, S_ISREG(st.st_mode) ? "Regular file" : 
+           S_ISDIR(st.st_mode) ? "Directory" : "Other");
+    return 0;
+}
+
+int cmd_entropy_check(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: entropy-check <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    printf(COLOR_GREY "Entropy analysis requires statistical implementation.\n" COLOR_RESET);
+    return 1;
+}
+
+int cmd_fossil(int argc, char **argv, shell_context_t *ctx) {
+    (void)ctx;
+    if (argc < 2) {
+        printf(COLOR_GREY "Usage: fossil <file>\n" COLOR_RESET);
+        return 1;
+    }
+    
+    struct stat st;
+    if (stat(argv[1], &st) != 0) {
+        printf(COLOR_GREY "%s\n" COLOR_RESET, ERR_FILE_NOT_FOUND);
+        return 1;
+    }
+    
+    printf(COLOR_WHITE "File: " COLOR_RESET "%s\n", argv[1]);
+    printf(COLOR_WHITE "Last modified: " COLOR_RESET "%s\n", ctime(&st.st_mtime));
+    return 0;
+}
+

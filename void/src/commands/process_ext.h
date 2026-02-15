@@ -40,7 +40,6 @@ int cmd_glances(int argc, char **argv, shell_context_t *ctx);
 int cmd_nmon(int argc, char **argv, shell_context_t *ctx);
 int cmd_iotop(int argc, char **argv, shell_context_t *ctx);
 int cmd_powertop(int argc, char **argv, shell_context_t *ctx);
-int cmd_nethogs_ext(int argc, char **argv, shell_context_t *ctx);
 
 /* Process Tracing & Debugging */
 int cmd_strace_ext(int argc, char **argv, shell_context_t *ctx);

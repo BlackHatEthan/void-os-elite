@@ -2,6 +2,7 @@
 #define HTTP_CLIENT_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /* Native HTTP client - no external dependencies */
 typedef struct {

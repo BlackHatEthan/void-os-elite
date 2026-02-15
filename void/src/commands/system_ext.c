@@ -10,7 +10,9 @@
 #include <sys/utsname.h>
 #include <sys/stat.h>
 #include <sys/statvfs.h>
+#ifdef __linux__
 #include <sys/sysinfo.h>
+#endif
 #include <sys/resource.h>
 #include <pwd.h>
 #include <grp.h>

@@ -20,6 +20,7 @@ int cmd_colrm(int argc, char **argv, shell_context_t *ctx);
 int cmd_column(int argc, char **argv, shell_context_t *ctx);
 int cmd_rev(int argc, char **argv, shell_context_t *ctx);
 int cmd_shuf(int argc, char **argv, shell_context_t *ctx);
+int cmd_most(int argc, char **argv, shell_context_t *ctx);
 
 /* Text Search */
 int cmd_ag(int argc, char **argv, shell_context_t *ctx);
