@@ -148,3 +148,5 @@ Cargo.lock
 *.so
 *.dylib
 
+.cursor/
+.cursorrules
