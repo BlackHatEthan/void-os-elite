@@ -6,7 +6,7 @@ A high-performance, developer-grade, security-aware CLI operating system written
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)](https://github.com/yourusername/void-os-elite)
 
-## 🚀 Features
+## Features
 
 - **1,000+ Commands** - Comprehensive command set organized into 14 categories
 - **Native Implementation** - Pure C/Assembly, no external dependencies
@@ -16,7 +16,7 @@ A high-performance, developer-grade, security-aware CLI operating system written
 - **Extensible** - Plugin architecture for customization
 - **Bootable** - Create bootable USB or ISO files
 
-## 📦 Quick Start
+## Quick Start
 
 ### Build
 
@@ -35,7 +35,7 @@ void-help all          # All commands
 void-help <category>   # Category commands
 ```
 
-## 📚 Documentation
+## Documentation
 
 - **[COMPLETE_TUTORIAL.md](void/COMPLETE_TUTORIAL.md)** - Complete user guide and tutorial
 - **[QUICK_START.md](void/QUICK_START.md)** - 5-minute quick start guide
@@ -44,7 +44,7 @@ void-help <category>   # Category commands
 - **[BOOTABLE_GUIDE.md](void/BOOTABLE_GUIDE.md)** - Bootable USB creation
 - **[DOCUMENTATION_INDEX.md](void/DOCUMENTATION_INDEX.md)** - Documentation navigation
 
-## 🛠️ Installation
+## Installation
 
 ### Install by OS (recommended)
 
@@ -125,7 +125,7 @@ sudo ./scripts/install_kali_dependencies.sh
 void-install-kali all
 ```
 
-## 📋 Command Categories
+## Command Categories
 
 1. **Core Shell Commands** - Basic operations, navigation, text processing
 2. **Void OS Styled** - Void-themed command names
@@ -142,7 +142,7 @@ void-install-kali all
 13. **Void OS Specific** - Void OS management
 14. **Multimedia & Archives** - Media and compression tools
 
-## 🎯 Key Commands
+## Key Commands
 
 ```bash
 # Help
@@ -163,7 +163,7 @@ void-install-kali list    # List available tools
 void-install-kali <tool>  # Install security tool
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 - **Language**: C (C11) with Assembly optimizations
 - **Build System**: Makefile
@@ -171,7 +171,7 @@ void-install-kali <tool>  # Install security tool
 - **Platform**: Linux (x86_64, ARM, ARM64)
 - **License**: MIT
 
-## 📖 Examples
+## Examples
 
 ### Basic Usage
 
@@ -213,7 +213,7 @@ sqlmap -u http://target.com
 nmap -sS target.com
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -223,17 +223,17 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by modern shell environments
 - Built with developer productivity in mind
 - Security tools integration for security professionals
 
-## 📞 Support
+## Support
 
 - **Documentation**: See `void/DOCUMENTATION_INDEX.md`
 - **Help Command**: `void-help`
