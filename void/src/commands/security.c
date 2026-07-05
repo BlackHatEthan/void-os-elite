@@ -279,36 +279,19 @@ int cmd_net_watch(int argc, char **argv, shell_context_t *ctx) {
         }
         fclose(udp);
     }
-    #else
-    /* macOS/BSD - try /proc/net/tcp if available, otherwise show message */
-    FILE *tcp = fopen("/proc/net/tcp", "r");
-    if (tcp != NULL) {
-        char line[256];
-        int count = 0;
-        printf(COLOR_WHITE "TCP Connections:\n" COLOR_RESET);
-        while (fgets(line, sizeof(line), tcp) != NULL && count < 20) {
-            if (count == 0) {
-                count++;
-                continue;
-            }
-            unsigned int local_addr, local_port, remote_addr, remote_port;
-            char state[16];
-            if (sscanf(line, "%*d: %x:%x %x:%x %s", 
-                      &local_addr, &local_port, &remote_addr, &remote_port, state) == 5) {
-                struct in_addr local, remote;
-                local.s_addr = htonl(local_addr);
-                remote.s_addr = htonl(remote_addr);
-                printf(COLOR_BLUE "%s:%d" COLOR_RESET " -> " COLOR_BLUE "%s:%d" COLOR_RESET " [%s]\n",
-                       inet_ntoa(local), ntohs(local_port),
-                       inet_ntoa(remote), ntohs(remote_port), state);
-                count++;
-            }
+    #elif defined(__APPLE__)
+    {
+        FILE *fp = popen("netstat -an 2>/dev/null | head -40", "r");
+        if (fp != NULL) {
+            char line[256];
+            printf(COLOR_WHITE "Active connections (netstat -an):\n" COLOR_RESET);
+            while (fgets(line, sizeof(line), fp) != NULL) printf("%s", line);
+            pclose(fp);
+            return 0;
         }
-        fclose(tcp);
-    } else {
-        printf(COLOR_GREY "Network connection monitoring requires /proc/net/tcp (Linux)\n" COLOR_RESET);
-        printf(COLOR_GREY "Native implementation pending for macOS.\n" COLOR_RESET);
     }
+    #else
+    printf(COLOR_GREY "Network connection monitoring requires Linux or macOS.\n" COLOR_RESET);
     #endif
     
     return 0;

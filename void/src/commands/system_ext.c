@@ -24,8 +24,13 @@
 #include <dirent.h>
 #include <errno.h>
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <sys/sysctl.h>
+#endif
+#ifdef __APPLE__
+#include <sys/types.h>
+#include <mach/mach.h>
+#include <mach/mach_host.h>
 #endif
 
 /* System Information */
@@ -106,9 +111,21 @@ int cmd_uptime(int argc, char **argv, shell_context_t *ctx) {
                days, (days != 1) ? "s" : "", hours, minutes);
         return 0;
     }
+    #elif defined(__APPLE__)
+    struct timeval boottime;
+    size_t len = sizeof(boottime);
+    if (sysctlbyname("kern.boottime", &boottime, &len, NULL, 0) == 0) {
+        time_t now = time(NULL);
+        unsigned long uptime_sec = (unsigned long)(now - boottime.tv_sec);
+        unsigned long days = uptime_sec / 86400;
+        unsigned long hours = (uptime_sec % 86400) / 3600;
+        unsigned long minutes = (uptime_sec % 3600) / 60;
+        printf(COLOR_WHITE "up %lu day%s, %lu:%02lu\n" COLOR_RESET,
+               days, (days != 1) ? "s" : "", hours, minutes);
+        return 0;
+    }
     #else
-    /* macOS/BSD - read from sysctl */
-    printf(COLOR_GREY "Uptime requires sysctl on this system.\n" COLOR_RESET);
+    printf(COLOR_GREY "Uptime not available on this system.\n" COLOR_RESET);
     #endif
     
     return 1;
@@ -331,6 +348,22 @@ int cmd_vmstat(int argc, char **argv, shell_context_t *ctx) {
                mem_free / 1024, mem_cached / 1024);
         return 0;
     }
+    #elif defined(__APPLE__)
+    {
+        uint64_t memsize = 0;
+        size_t len = sizeof(memsize);
+        if (sysctlbyname("hw.memsize", &memsize, &len, NULL, 0) == 0) {
+            mach_port_t host_port = mach_host_self();
+            vm_statistics64_data_t vm_stat;
+            mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+            if (host_statistics64(host_port, HOST_VM_INFO64, (host_info64_t)&vm_stat, &count) == 0) {
+                unsigned long free_m = (unsigned long)((vm_stat.free_count * (uint64_t)vm_page_size) / 1024);
+                unsigned long inactive_m = (unsigned long)((vm_stat.inactive_count * (uint64_t)vm_page_size) / 1024);
+                printf(COLOR_WHITE " 0  0      0 %6lu     0 %6lu    0    0     0     0   0   0  0  0 100  0\n" COLOR_RESET, free_m, inactive_m);
+                return 0;
+            }
+        }
+    }
     #endif
     
     printf(COLOR_GREY "VM statistics not available on this system.\n" COLOR_RESET);
@@ -366,6 +399,16 @@ int cmd_mpstat(int argc, char **argv, shell_context_t *ctx) {
         }
         fclose(fp);
         return 0;
+    }
+    #elif defined(__APPLE__)
+    {
+        size_t len;
+        int ncpu;
+        len = sizeof(ncpu);
+        if (sysctlbyname("hw.ncpu", &ncpu, &len, NULL, 0) == 0) {
+            printf(COLOR_WHITE "CPU: (use Activity Monitor for per-CPU on macOS)\n" COLOR_RESET);
+            return 0;
+        }
     }
     #endif
     
@@ -411,6 +454,28 @@ int cmd_free(int argc, char **argv, shell_context_t *ctx) {
         printf(COLOR_WHITE "Swap:  %12lu %12lu %12lu\n" COLOR_RESET,
                swap_total, swap_used, swap_free);
         return 0;
+    }
+    #elif defined(__APPLE__)
+    {
+        uint64_t memsize = 0;
+        size_t len = sizeof(memsize);
+        if (sysctlbyname("hw.memsize", &memsize, &len, NULL, 0) == 0) {
+            mach_port_t host_port = mach_host_self();
+            vm_statistics64_data_t vm_stat;
+            mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+            if (host_statistics64(host_port, HOST_VM_INFO64, (host_info64_t)&vm_stat, &count) == 0) {
+                uint64_t total_m = memsize / (1024 * 1024);
+                uint64_t free_m = (vm_stat.free_count * (uint64_t)vm_page_size) / (1024 * 1024);
+                uint64_t used_m = total_m - free_m;
+                uint64_t inactive_m = (vm_stat.inactive_count * (uint64_t)vm_page_size) / (1024 * 1024);
+                printf(COLOR_WHITE "              total        used        free      shared  buff/cache   available\n" COLOR_RESET);
+                printf(COLOR_WHITE "Mem:   %12llu %12llu %12llu %12u %12llu %12llu\n" COLOR_RESET,
+                       (unsigned long long)total_m, (unsigned long long)used_m, (unsigned long long)free_m,
+                       0u, (unsigned long long)inactive_m, (unsigned long long)(free_m + inactive_m));
+                printf(COLOR_WHITE "Swap:  (swap not shown on macOS)\n" COLOR_RESET);
+                return 0;
+            }
+        }
     }
     #endif
     
@@ -458,6 +523,20 @@ int cmd_lscpu(int argc, char **argv, shell_context_t *ctx) {
         printf(COLOR_WHITE "Model name:          %s\n" COLOR_RESET, model);
         return 0;
     }
+    #elif defined(__APPLE__)
+    {
+        int ncpu = 0;
+        size_t len = sizeof(ncpu);
+        char model[256] = "";
+        size_t model_len = sizeof(model);
+        if (sysctlbyname("hw.ncpu", &ncpu, &len, NULL, 0) == 0) {
+            sysctlbyname("hw.model", model, &model_len, NULL, 0);
+            printf(COLOR_WHITE "Architecture:        %s\n" COLOR_RESET, sizeof(void*) == 8 ? "aarch64/x86_64" : "armv7/i386");
+            printf(COLOR_WHITE "CPU(s):              %d\n" COLOR_RESET, ncpu);
+            printf(COLOR_WHITE "Model name:          %s\n" COLOR_RESET, model[0] ? model : "Apple");
+            return 0;
+        }
+    }
     #endif
     
     printf(COLOR_GREY "CPU information not available.\n" COLOR_RESET);
@@ -477,6 +556,16 @@ int cmd_lspci(int argc, char **argv, shell_context_t *ctx) {
         fclose(fp);
         return 0;
     }
+    #elif defined(__APPLE__)
+    {
+        FILE *fp = popen("system_profiler SPPCIDataType 2>/dev/null", "r");
+        if (fp != NULL) {
+            char line[256];
+            while (fgets(line, sizeof(line), fp) != NULL) printf("%s", line);
+            pclose(fp);
+            return 0;
+        }
+    }
     #endif
     
     printf(COLOR_GREY "PCI device listing not available.\n" COLOR_RESET);
@@ -495,6 +584,16 @@ int cmd_lsusb(int argc, char **argv, shell_context_t *ctx) {
         }
         fclose(fp);
         return 0;
+    }
+    #elif defined(__APPLE__)
+    {
+        FILE *fp = popen("system_profiler SPUSBDataType 2>/dev/null", "r");
+        if (fp != NULL) {
+            char line[256];
+            while (fgets(line, sizeof(line), fp) != NULL) printf("%s", line);
+            pclose(fp);
+            return 0;
+        }
     }
     #endif
     

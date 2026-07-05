@@ -4,6 +4,7 @@
 #include "../utils/string.h"
 #include "../utils/http_client.h"
 #include "../utils/ping_native.h"
+#include "../utils/wifi_native.h"
 #include "../../include/void.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,14 +31,16 @@ int cmd_wifi_scan(int argc, char **argv, shell_context_t *ctx) {
     printf(COLOR_WHITE "Scanning for WiFi networks...\n" COLOR_RESET);
     printf(COLOR_GREY "─────────────────────────────────────\n" COLOR_RESET);
     
-    /* Try using iw/iwlist if available */
+    /* Prefer native scan (no host tools): uses kernel nl80211 on Linux */
+    if (wifi_native_available() && wifi_native_scan(NULL) == 0) {
+        return 0;
+    }
+    
+    /* Fallback: host tools (iw/iwlist/nmcli) only if native failed or unavailable */
     pid_t pid = fork();
     if (pid == 0) {
-        /* Try iw first (modern) */
         if (execlp("iw", "iw", "dev", "wlan0", "scan", NULL) != 0) {
-            /* Fall back to iwlist */
             if (execlp("iwlist", "iwlist", "wlan0", "scan", NULL) != 0) {
-                /* Fall back to nmcli */
                 execlp("nmcli", "nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "device", "wifi", "list", NULL);
                 exit(1);
             }
@@ -51,10 +54,8 @@ int cmd_wifi_scan(int argc, char **argv, shell_context_t *ctx) {
         }
     }
     
-    /* If system tools failed, show message */
-    printf(COLOR_GREY "WiFi scanning requires wireless tools.\n" COLOR_RESET);
-    printf(COLOR_GREY "Install with: sudo apt install wireless-tools iw\n" COLOR_RESET);
-    printf(COLOR_GREY "Or use NetworkManager: sudo apt install network-manager\n" COLOR_RESET);
+    printf(COLOR_GREY "WiFi scanning requires a WiFi interface (wlan0/wlp*) and kernel nl80211 support.\n" COLOR_RESET);
+    printf(COLOR_GREY "Or install: wireless-tools, iw, or network-manager.\n" COLOR_RESET);
     return 1;
 }
 

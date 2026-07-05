@@ -255,42 +255,20 @@ int cmd_ps(int argc, char **argv, shell_context_t *ctx) {
         }
         closedir(proc);
     }
-    #else
-    /* macOS/BSD - try /proc if available, otherwise show message */
-    DIR *proc = opendir("/proc");
-    if (proc != NULL) {
-        printf(COLOR_GREY "%-8s %s\n" COLOR_RESET, "PID", "COMMAND");
-        printf(COLOR_GREY "─────────────────────────────────\n" COLOR_RESET);
-        
-        struct dirent *entry;
-        int count = 0;
-        while ((entry = readdir(proc)) != NULL && count < 20) {
-            if (entry->d_name[0] >= '0' && entry->d_name[0] <= '9') {
-                pid_t pid = (pid_t)atoi(entry->d_name);
-                char cmdline_path[256];
-                snprintf(cmdline_path, sizeof(cmdline_path), "/proc/%s/cmdline", entry->d_name);
-                
-                FILE *fp = fopen(cmdline_path, "r");
-                if (fp != NULL) {
-                    char cmdline[256];
-                    if (fgets(cmdline, sizeof(cmdline), fp) != NULL) {
-                        for (int i = 0; cmdline[i] != '\0' && i < sizeof(cmdline) - 1; i++) {
-                            if (cmdline[i] == '\0' && i > 0) {
-                                cmdline[i] = ' ';
-                            }
-                        }
-                        printf(COLOR_WHITE "%-8d %s\n" COLOR_RESET, pid, cmdline);
-                        count++;
-                    }
-                    fclose(fp);
-                }
-            }
+    #elif defined(__APPLE__)
+    {
+        FILE *fp = popen("ps -eo pid,comm 2>/dev/null | head -50", "r");
+        if (fp != NULL) {
+            char line[256];
+            printf(COLOR_GREY "%-8s %s\n" COLOR_RESET, "PID", "COMMAND");
+            printf(COLOR_GREY "─────────────────────────────────\n" COLOR_RESET);
+            while (fgets(line, sizeof(line), fp) != NULL) printf("%s", line);
+            pclose(fp);
+            return 0;
         }
-        closedir(proc);
-    } else {
-        printf(COLOR_GREY "Process listing requires /proc filesystem (Linux)\n" COLOR_RESET);
-        printf(COLOR_GREY "Native implementation pending for macOS.\n" COLOR_RESET);
     }
+    #else
+    printf(COLOR_GREY "Process listing requires Linux or macOS (or run in WSL on Windows).\n" COLOR_RESET);
     #endif
     
     return 0;

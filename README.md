@@ -46,7 +46,57 @@ void-help <category>   # Category commands
 
 ## 🛠️ Installation
 
-### From Source
+### Install by OS (recommended)
+
+| OS | Command | File to use |
+|----|--------|-------------|
+| **Linux** | `./install.sh` or `./install-linux.sh` | `install-linux.sh` |
+| **macOS** | `./install.sh` or `./install-macos.sh` | `install-macos.sh` |
+| **Windows** | WSL + `./install-linux.sh` or `.\install-windows.ps1` | `install-windows.ps1` or `install-windows.bat` |
+
+From the repo root after cloning:
+
+```bash
+git clone https://github.com/BlackHatEthan/void-os-elite.git
+cd void-os-elite
+chmod +x install.sh install-linux.sh install-macos.sh
+./install.sh
+```
+
+See **[INSTALL.md](INSTALL.md)** for step-by-step instructions on all platforms.
+
+### Install Dependencies
+
+Before building, install all required dependencies:
+
+| OS | Command | File |
+|----|---------|------|
+| **Linux** | `./install-dependencies-linux.sh` | `install-dependencies-linux.sh` |
+| **macOS** | `./install-dependencies-macos.sh` | `install-dependencies-macos.sh` |
+| **Windows** | `.\install-dependencies-windows.ps1` | `install-dependencies-windows.ps1` |
+| **Auto-detect** | `./install-dependencies.sh` | `install-dependencies.sh` |
+
+These scripts install:
+- Build tools (gcc, make, etc.)
+- ISO creation tools (xorriso, grub, etc.)
+- Archive tools (tar, gzip, p7zip)
+- Network tools (wget, curl)
+- Version control (git)
+
+**Example:**
+```bash
+# Linux
+sudo bash install-dependencies-linux.sh
+
+# macOS
+bash install-dependencies-macos.sh
+
+# Windows (in WSL)
+wsl
+bash install-dependencies-linux.sh
+```
+
+### From Source (manual)
 
 ```bash
 cd void
