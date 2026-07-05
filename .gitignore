@@ -98,9 +98,9 @@ coverage/
 *.prof
 gmon.out
 
-# Core dumps
-core
-core.*
+# Core dump files (not void/src/core/ or commands/core.c)
+/core
+core.[0-9]*
 
 # Valgrind output
 valgrind-out.*
